@@ -13,9 +13,12 @@
   "license": "ISC",
   "devDependencies": {
     "@babel/core": "^7.8.6",
+    "@babel/plugin-transform-destructuring": "^7.8.3",
+    "@babel/preset-env": "^7.8.6",
     "parcel-bundler": "^1.12.4"
   },
   "dependencies": {
+    "babel-preset-env": "^1.7.0",
     "single-spa": "^4.4.3",
     "systemjs": "^6.2.3"
   }

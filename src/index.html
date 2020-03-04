@@ -6,6 +6,8 @@
     <title>Coexisting Vue Microfrontends</title>
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="importmap-type" content="systemjs-importmap">
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/8.0.1/normalize.min.css">
+    <link rel="stylesheet" type="text/css" href="https://meyerweb.com/eric/tools/css/reset/reset.css">
     <link rel="stylesheet" type="text/css" href="./index.css">
     <script type="systemjs-importmap">
       {
@@ -34,9 +36,7 @@
     <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.1.1/extras/use-default.min.js"></script>
   </head>
   <body>
-    <script defer src="./wc.min.js"></script>
     <script>
-      // "app1": "https://micro-vue-app.now.sh/app.js",
       (function() {
         Promise.all([
           System.import('single-spa'),
@@ -44,7 +44,11 @@
           System.import('vue-router'),
           System.import('vuex'),
         ]).then(function (modules) {
-          const [singleSpa, Vue, VueRouter, Vuex] = modules;
+          const 
+            singleSpa = modules[0],
+            Vue = modules[1],
+            VueRouter = modules[2],
+            Vuex = modules[3];
 
           Vue.use(VueRouter);
           Vue.use(Vuex);
