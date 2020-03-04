@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title>Coexisting Vue Microfrontends</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="importmap-type" content="systemjs-importmap">
+    <link rel="stylesheet" type="text/css" href="/src.9ad09f98.css">
+    <script type="systemjs-importmap">
+      {
+        "imports": {
+          "login": "https://micro-react-app.now.sh/app.js",
+          "header": "https://micro-header.now.sh/app.js",
+          "sidebar": "https://micro-sidebar.now.sh/app.js",
+          "app1": "https://micro-vue-app.now.sh/app.js",
+          "angularjs": "https://micro-angularjs-app.now.sh/app.js",
+          "svelte": "https://micro-svelte-app.now.sh/app.js",
+          "single-spa": "https://cdnjs.cloudflare.com/ajax/libs/single-spa/4.3.7/system/single-spa.min.js",
+          "vue": "https://unpkg.com/vue@2.6.11/dist/vue.js",
+          "vue-router": "https://cdn.jsdelivr.net/npm/vue-router@3.0.7/dist/vue-router.min.js",
+          "vuex": "https://unpkg.com/vuex@3.1.2/dist/vuex.min.js"
+        }
+      }
+    </script>
+    <link rel="preload" href="https://cdnjs.cloudflare.com/ajax/libs/single-spa/4.3.7/system/single-spa.min.js" as="script" crossorigin="anonymous">
+    <link rel="preload" href="https://cdn.jsdelivr.net/npm/vue@2.6.10/dist/vue.js" as="script" crossorigin="anonymous">
+    <script src="https://unpkg.com/@webcomponents/webcomponentsjs@2.4.1/webcomponents-loader.js"></script>
+    <script src="https://unpkg.com/import-map-overrides@1.7.2/dist/import-map-overrides.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.1.1/system.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.1.1/extras/amd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.1.1/extras/named-exports.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.1.1/extras/named-register.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/systemjs/6.1.1/extras/use-default.min.js"></script>
+  <script src="/src.9ad09f98.js"></script></head>
+  <body>
+    <script defer="" src="/wc.min.3eca901a.js"></script>
+    <script>function _slicedToArray(arr, i) { return _arrayWithHoles(arr) || _iterableToArrayLimit(arr, i) || _nonIterableRest(); }
+
+function _nonIterableRest() { throw new TypeError("Invalid attempt to destructure non-iterable instance"); }
+
+function _iterableToArrayLimit(arr, i) { if (!(Symbol.iterator in Object(arr) || Object.prototype.toString.call(arr) === "[object Arguments]")) { return; } var _arr = []; var _n = true; var _d = false; var _e = undefined; try { for (var _i = arr[Symbol.iterator](), _s; !(_n = (_s = _i.next()).done); _n = true) { _arr.push(_s.value); if (i && _arr.length === i) break; } } catch (err) { _d = true; _e = err; } finally { try { if (!_n && _i["return"] != null) _i["return"](); } finally { if (_d) throw _e; } } return _arr; }
+
+function _arrayWithHoles(arr) { if (Array.isArray(arr)) return arr; }
+
+// "app1": "https://micro-vue-app.now.sh/app.js",
+(function () {
+  Promise.all([System.import('single-spa'), System.import('vue'), System.import('vue-router'), System.import('vuex')]).then(function (modules) {
+    var _modules = _slicedToArray(modules, 4),
+        singleSpa = _modules[0],
+        Vue = _modules[1],
+        VueRouter = _modules[2],
+        Vuex = _modules[3];
+
+    Vue.use(VueRouter);
+    Vue.use(Vuex);
+
+    function showWhenAnyOf(routes) {
+      return function (location) {
+        return routes.some(function (route) {
+          return location.pathname === route;
+        });
+      };
+    }
+
+    function showWhenPrefix(routes) {
+      return function (location) {
+        return routes.some(function (route) {
+          return location.pathname.startsWith(route);
+        });
+      };
+    }
+
+    function showExcept(routes) {
+      return function (location) {
+        return routes.every(function (route) {
+          return location.pathname !== route;
+        });
+      };
+    }
+
+    singleSpa.registerApplication('login', function () {
+      return System.import('login');
+    }, showWhenAnyOf(['/login']));
+    singleSpa.registerApplication('app-header', function () {
+      return System.import('header');
+    }, showExcept(['/login', '/']));
+    singleSpa.registerApplication('app-sidebar', function () {
+      return System.import('sidebar');
+    }, showExcept(['/login']));
+    singleSpa.registerApplication('angularjs', function () {
+      return System.import('angularjs');
+    }, showWhenPrefix(['/angularjs']));
+    singleSpa.registerApplication('app1', function () {
+      return System.import('app1');
+    }, showWhenPrefix(['/app1']));
+    singleSpa.registerApplication('svelte', function () {
+      return System.import('svelte');
+    }, showWhenPrefix(['/svelte']));
+    singleSpa.start();
+    window.history.pushState(null, null, '/login');
+  });
+})();</script>
+    <div id="login"></div>
+    <div class="grid__container grid__container__hidden">
+      <header class="grid__container__header" id="app-header"></header>
+      <aside class="grid__container__sidebar" id="app-sidebar"></aside>
+      <main class="grid__container__content">
+        <div id="app1"></div>
+        <div id="app2"></div>
+        <div id="app3"></div>
+        <div id="angularjs"></div>
+        <div id="svelte-app"></div>
+      </main>
+    </div>
+    <!-- See https://github.com/joeldenning/import-map-overrides#user-interface  -->
+    <import-map-overrides-full show-when-local-storage="overrides-ui"></import-map-overrides-full>
+  </body>
+</html>

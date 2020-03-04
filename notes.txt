@@ -1,0 +1,99 @@
+migração para microfront
+ 
+O que ?
+  - o que é miocrofront?
+    - É mais um conceito do que uma tecnica/framework
+
+Como?
+  - Tecnologias/tecnicas para construir microfront
+    - quais pseudo-frameworks ou libs
+  -single-spa
+    - qual aprochs utilizar
+  -containers/reverse-proxy
+     -https://www.mosaic9.org/
+  -webcomponents
+  -iframe
+  - Como migrar o monilito
+    - Pensar que tudo(ou quase tudo) deve se tornar um módulo novo
+      - Delimitar a aplicação onde começa e termina X e começa Y
+    - levantar requisitos da sua aplicação
+      - como vou integrar meus módulos com as rotas e fazer isso virar uma SPA
+      - como fazer a comunicação entre os módulos ou é realmente necessária esta comunicação?
+        - devo utlizar um state management global
+        - Utilizar eventos
+        - Utilizar web storage(local/session/cookies), como fazer com dados sensiveis?
+        - Ou não fazer esta intercomunicação entre módulos
+      - separar projetos em diretórios diferentes e verificar funcionalidade
+        - criar repos no github e fazer a publicação no netlify e testar "prod"
+      - como lidar com libs auxiliares e toolkit de components(design systems)
+        -- publicar webcomponents no npm
+      - utilizar PWA para otimizar os módulos(BONUS)
+    - Definir uma estratégia para a migração
+      - utilizar uma estratégia progressiva divididas pos fases
+        - construir o projeto root(wrapper) que contém os módulos
+        - definir os módulos e separar
+        - caso tenha libs auxiliares tornar elas mais atômizadas, 
+          e utilizar só o necessário tornando o código mais independente possível
+        - ideal utilizar um design systems com os components para os módulos
+    
+Considerações finais
+  - Após todos os pontos, microfront é uma tendencia ou o monolito ainda tem seus pontos positivos
+    - Repetição de código
+    - Utilizar um meta-framework ou construir sua solução
+      single spa
+        pros:
+          separação de código/responábilidade
+          tem exemplos para se utiliza de modelos
+        cons:
+          pouco html semântico
+          Depêndencia da comunidade em manter a lib
+
+Isso não vai no artigo
+Estratégia para migração
+  - FASE 1(Verificar nova versão do vue-microfront, aparentemente só ha alterações no wrapper[root-config/https://github.com/vue-microfrontends])
+    - Pensar como seria aplicada a gestão de acesso a nova arquitetura
+    - Ainda utilizar os módulos(components/ui/providers) da forma como está hoje
+    - Isolar as stores, remover as intercomunicaçoes entre os módulos
+      - ScAddress
+      - ScLogistProviders
+    - criar wrapper para hospedar os módulos
+    - refatorar cada módulo(separação física)
+      - tornar cada módulo independente(dev server, build, linter, etc)
+      - se manteria a mesma arquitetura
+        - core, order, quote, psl, etc.
+    - Separação do core em novos módulos
+  Na divisão em 2(home e login), não será possivel utilizar o vue dev tools
+      - home
+      - auth(login)
+  OU
+  Na divisão por 3 o root fica com mais responsabilidades e é ncessário aplicar e remover algumas classe na transição do login p/ a home
+      - auth(login)
+      - menu(sidebar)
+      - header
+
+    - integrar os módulos no wrapper
+    - criar os subdominios para hospedagem para cada módulos
+    - refatorar os scripts de build para os respectivos módulos
+      - com o SingleSPA os bundles devem ser únicos e compilar com o librarytarget em UMD(Universal Module Definition)
+    - ! Tentar transformar o sc-components em wc, e importar no wrapper e com o registro de customElements é global será possível utilizar
+       os components nos módulos sem importar a dependencia dentro de cada módulo para utilização 
+        - o vue-cli porssui um a flag de build target(--wc) para converter web components
+  - FASE 2
+    - Tentar abstrair o máximo para o components do UI/providers, para que o components se torne um design systems mais robusto
+    - Com essa abstração tentar remover o secure-ui
+    - ! caso não seja possível transformar o vue component em WC, será necessário reescrever os components vue para WC, preferencialmente
+    - Nova estrutura do vue microfront é possivel compartilhar componentes entre as microapps
+      (https://github.com/vue-microfrontends/styleguide)
+      utilizando stencil ou polymer -- OPCIONAL
+      ! contornar problema com v-model
+        - ://github.com/vuejs/vue/issues/7830
+  - FASE 3
+    - Construir um sistema de comunicação por eventos(RXjs) para eventuais comincações -- OPCIONAL
+
+fontes
+
+  Artigos
+  - https://levelup.gitconnected.com/micro-frontend-architecture-replacing-a-monolith-from-the-inside-out-61f60d2e14c1
+
+  Repos
+  - https://github.com/jualoppaz/single-spa-login-example-with-npm-packages
